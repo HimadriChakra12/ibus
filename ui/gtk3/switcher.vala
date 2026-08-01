@@ -190,7 +190,7 @@ class Switcher : Gtk.Window {
     }
 
     public override bool key_press_event(Gdk.EventKey e) {
-        Gdk.EventKey *pe = &e;
+        Gdk.EventKey *pe = e;
         switch (pe->keyval) {
             case 0x0020: /* space */
             case 0xff80: /* KP_Space */
@@ -221,7 +221,7 @@ class Switcher : Gtk.Window {
     }
 
     public override bool key_release_event(Gdk.EventKey e) {
-        Gdk.EventKey *pe = &e;
+        Gdk.EventKey *pe = e;
 
         if (KeybindingManager.primary_modifier_still_pressed((Gdk.Event *)pe,
             m_primary_modifier)) {

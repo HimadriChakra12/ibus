@@ -33,12 +33,12 @@ class EngineAbout(Gtk.Dialog):
         self.__engine_desc = enginedesc
         super(EngineAbout, self).__init__(_("About"), None,
                 Gtk.DialogFlags.MODAL,
-                (Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
+                ("_Close", Gtk.ResponseType.CLOSE))
 
         self.__init_ui()
 
     def __init_ui(self):
-        self.set_icon_name(Gtk.STOCK_ABOUT)
+        self.set_icon_name("help-about")
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -102,10 +102,10 @@ class EngineAbout(Gtk.Dialog):
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(icon, 48, 48, True)
         except:
-            theme = Gtk.IconTheme.get_default()
+            theme = Gtk.IconTheme.get_for_screen(Gdk.Screen.get_default())
             icon = theme.lookup_icon("ibus-engine", 48, 0)
             if icon == None:
-                icon = theme.lookup_icon(Gtk.STOCK_MISSING_IMAGE, 48, 0)
+                icon = theme.lookup_icon("image-missing", 48, 0)
             pixbuf = icon.load_icon()
         return pixbuf
 

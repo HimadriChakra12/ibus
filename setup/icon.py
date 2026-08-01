@@ -30,7 +30,7 @@ from gi.repository import Gtk
 from os import path
 
 
-icon_theme = Gtk.IconTheme.get_default()
+icon_theme = Gtk.IconTheme.get_for_screen(Gdk.Screen.get_default())
 dir = path.dirname(__file__)
 icondir = path.join(dir, "..", "icons")
 icon_theme.prepend_search_path(icondir)
@@ -59,7 +59,7 @@ def load_icon(icon, size):
         pass
     if pixbuf == None:
         try:
-            theme = Gtk.IconTheme.get_default()
+            theme = Gtk.IconTheme.get_for_screen(Gdk.Screen.get_default())
             pixbuf = theme.load_icon(icon, icon_size, 0)
         except:
             # import traceback

@@ -20,6 +20,7 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+import functools
 import locale
 
 from gi.repository import GObject
@@ -65,7 +66,6 @@ class EngineComboBox(Gtk.ComboBox):
         self.__model.set(iter1, 0, 0)
         langs = {}
         for e in engines:
-            print e.get_language()
             l = IBus.get_language_name(e.get_language())
             if l == None:
                 l = ""
@@ -73,8 +73,8 @@ class EngineComboBox(Gtk.ComboBox):
                 langs[l] = []
             langs[l].append(e)
 
-        keys = langs.keys()
-        keys.sort(locale.strcoll)
+        keys = list(langs.keys())
+        keys.sort(key = functools.cmp_to_key(locale.strcoll))
         current_lang = IBus.get_language_name(locale.getlocale()[0])
         # move current language to the first place
         if current_lang in keys:
@@ -92,7 +92,7 @@ class EngineComboBox(Gtk.ComboBox):
                 if a.get_rank() == b.get_rank():
                     return locale.strcoll(a.get_longname(), b.get_longname())
                 return int(b.get_rank() - a.get_rank())
-            langs[l].sort(cmp_engine)
+            langs[l].sort(key = functools.cmp_to_key(cmp_engine))
             for e in langs[l]:
                 iter2 = self.__model.append(iter1)
                 self.__model.set(iter2, 0, e)
@@ -116,7 +116,7 @@ class EngineComboBox(Gtk.ComboBox):
             if pixbuf == None:
                 pixbuf = load_icon("ibus-engine", Gtk.IconSize.LARGE_TOOLBAR)
             if pixbuf == None:
-                pixbuf = load_icon(Gtk.STOCK_MISSING_IMAGE,
+                pixbuf = load_icon("image-missing",
                         Gtk.IconSize.LARGE_TOOLBAR)
             renderer.set_property("pixbuf", pixbuf)
 
@@ -148,7 +148,7 @@ class EngineComboBox(Gtk.ComboBox):
             iter = self.get_active_iter()
             return self.get_model()[iter][0]
         else:
-            raise AttributeError, 'unknown property %s' % property.name
+            raise AttributeError('unknown property %s' % property.name)
 
     def get_active_engine(self):
         return self.get_property("active-engine")

@@ -122,7 +122,7 @@ class EngineTreeView(Gtk.TreeView):
         if pixbuf == None:
             pixbuf = load_icon("ibus-engine", Gtk.IconSize.LARGE_TOOLBAR)
         if pixbuf == None:
-            pixbuf = load_icon(Gtk.STOCK_MISSING_IMAGE,
+            pixbuf = load_icon("image-missing",
                                Gtk.IconSize.LARGE_TOOLBAR)
 
         renderer.set_property("pixbuf", pixbuf)
@@ -169,15 +169,15 @@ class EngineTreeView(Gtk.TreeView):
             engines = [ r[0] for r in self.__model if r[0] != None]
             return engines
         else:
-            raise AttributeError, 'unknown property %s' % prop.name
+            raise AttributeError('unknown property %s' % prop.name)
 
     def do_set_property(self, prop, value):
         if prop.name == "active-engine":
-            raise AttributeError, "active-engine is readonly"
+            raise AttributeError("active-engine is readonly")
         elif prop.name == "engines":
             set_engines(value)
         else:
-            raise AttributeError, 'unknown property %s' % prop.name
+            raise AttributeError('unknown property %s' % prop.name)
 
     def set_engines(self, engines):
         self.__model.clear()

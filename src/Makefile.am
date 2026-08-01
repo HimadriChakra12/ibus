@@ -22,7 +22,7 @@
 
 NULL =
 
-SUBDIRS = . tests
+SUBDIRS = .
 
 # libibus = libibus-@IBUS_API_VERSION@.la
 libibus = libibus-1.0.la

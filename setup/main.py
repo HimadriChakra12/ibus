@@ -25,6 +25,10 @@ import signal
 import sys
 import time
 
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('IBus', '1.0')
+
 from gi.repository import GLib
 from gi.repository import Gtk
 from gi.repository import IBus
@@ -132,7 +136,6 @@ class Setup(object):
         else:
             self.__fontbutton_custom_font.set_sensitive(False)
         font_name = Gtk.Settings.get_default().get_property("gtk-font-name")
-        font_name = unicode(font_name, "utf-8")
         font_name = values.get("custom_font", font_name)
         self.__fontbutton_custom_font.connect("notify::font-name",
                 self.__fontbutton_custom_font_notify_cb)
@@ -354,8 +357,8 @@ class Setup(object):
                 self.__flush_gtk_events()
 
     def __shortcut_button_clicked_cb(self, button, name, section, _name, entry):
-        buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                Gtk.STOCK_OK, Gtk.ResponseType.OK)
+        buttons = ("_Cancel", Gtk.ResponseType.CANCEL,
+                "_OK", Gtk.ResponseType.OK)
         title = _("Select keyboard shortcut for %s") %  _(name)
         dialog = keyboardshortcut.KeyboardShortcutSelectionDialog(buttons = buttons, title = title)
         text = entry.get_text()
@@ -385,7 +388,7 @@ class Setup(object):
         if data[DATA_STARTED] == False:
             try:
                 self.__bus.register_start_engine(data[DATA_LANG], data[DATA_NAME])
-            except Exception, e:
+            except Exception as e:
                 dlg = Gtk.MessageDialog(type = Gtk.MESSAGE_ERROR,
                         buttons = Gtk.ButtonsType.CLOSE,
                         message_format = str(e))
@@ -396,7 +399,7 @@ class Setup(object):
         else:
             try:
                 self.__bus.register_stop_engine(data[DATA_LANG], data[DATA_NAME])
-            except Exception, e:
+            except Exception as e:
                 dlg = Gtk.MessageDialog(type = Gtk.MESSAGE_ERROR,
                         buttons = Gtk.ButtonsType.CLOSE,
                         message_format = str(e))
@@ -486,7 +489,6 @@ class Setup(object):
 
     def __fontbutton_custom_font_notify_cb(self, button, arg):
         font_name = self.__fontbutton_custom_font.get_font_name()
-        font_name = unicode(font_name, "utf-8")
         self.__config.set_value("panel", "custom_font",
                 GLib.Variant.new_string(font_name))
 

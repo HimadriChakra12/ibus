@@ -31,4 +31,7 @@ N_ = lambda a: a
 def init():
     localedir = os.getenv("IBUS_LOCALEDIR")
     gettext.bindtextdomain(DOMAINNAME, localedir)
-    gettext.bind_textdomain_codeset(DOMAINNAME, "UTF-8")
+    if hasattr(gettext, "bind_textdomain_codeset"):
+        # Removed in Python 3.13+; was always a no-op on Python 3 anyway,
+        # since gettext has returned UTF-8 str by default since Python 3.0.
+        gettext.bind_textdomain_codeset(DOMAINNAME, "UTF-8")

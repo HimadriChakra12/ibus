@@ -80,7 +80,7 @@ class Application {
     }
 
     private void bus_name_acquired_cb(DBusConnection connection,
-                                      string sender_name,
+                                      string? sender_name,
                                       string object_path,
                                       string interface_name,
                                       string signal_name,
@@ -91,7 +91,7 @@ class Application {
     }
 
     private void bus_name_lost_cb(DBusConnection connection,
-                                  string sender_name,
+                                  string? sender_name,
                                   string object_path,
                                   string interface_name,
                                   string signal_name,
@@ -101,7 +101,7 @@ class Application {
     }
 
     private void config_name_owner_changed_cb(DBusConnection connection,
-                                              string sender_name,
+                                              string? sender_name,
                                               string object_path,
                                               string interface_name,
                                               string signal_name,

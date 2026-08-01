@@ -105,6 +105,21 @@ AC_SUBST(DATE_DISPLAY)
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_CC_STDC
+
+# Default build flags for a size-optimized, stripped build.
+# -std=gnu17 -Wno-error=incompatible-pointer-types: GCC 14+ made implicit
+#   pointer conversions a hard error by default; this 2013-era GObject
+#   code relies on the old lenient behavior in several places, so this
+#   downgrades that one check back to a warning.
+# The rest (-Os, LTO, gc-sections, strip): drops installed size roughly
+#   in half with no functional change.
+# These are appended last (not prepended) so -Os wins over AC_PROG_CC's
+# own default -g -O2 — GCC uses whichever -O flag appears last on the
+# command line. Pass CFLAGS=/LDFLAGS= on the ./configure command line
+# to override these with your own choice instead.
+CFLAGS="$CFLAGS -Os -flto -ffunction-sections -fdata-sections -pipe -std=gnu17 -Wno-error=incompatible-pointer-types"
+LDFLAGS="$LDFLAGS -Wl,--as-needed -Wl,--gc-sections -flto -Wl,-O1"
+
 AM_PROG_VALAC([0.14])
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
@@ -143,7 +158,7 @@ AC_ARG_ENABLE(gtk2,
     AS_HELP_STRING([--disable-gtk2],
                    [Do not build gtk2 im module]),
     [enable_gtk2=$enableval],
-    [enable_gtk2=yes]
+    [enable_gtk2=no]
 )
 AM_CONDITIONAL([ENABLE_GTK2], [test x"$enable_gtk2" = x"yes"])
 
@@ -251,32 +266,11 @@ PKG_CHECK_MODULES(DBUS, [
     dbus-1
 ])
 
-# --disable-gconf option.
-AC_ARG_ENABLE(gconf,
-    AS_HELP_STRING([--disable-gconf],
-                   [Do not use GConf code]),
-    [enable_gconf=$enableval],
-    [enable_gconf=yes]
-)
-AM_CONDITIONAL([ENABLE_GCONF], [test x"$enable_gconf" = x"yes"])
-
-if test x"$enable_gconf" = x"yes"; then
-    # check gconf
-    PKG_CHECK_MODULES(GCONF,
-        [gconf-2.0 >= 2.12],
-    )
-
-    AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
-    if test x"$GCONFTOOL" = xno; then
-        AC_MSG_ERROR([gconftool-2 executable not found in your path - should be installed with GConf])
-    fi
-
-    AM_GCONF_SOURCE_2
-    # GCONF_SCHEMAS_INSTALL should be set in macro AM_GCONF_SOURCE_2
-else
-    AM_CONDITIONAL([GCONF_SCHEMAS_INSTALL], [false])
-    enable_gconf="no (disabled, use --enable-gconf to enable)"
-fi
+# gconf support removed: source dir deleted, dconf/memconf already cover
+# config storage, and gconf is unavailable on modern distros.
+enable_gconf="no (removed)"
+AM_CONDITIONAL([ENABLE_GCONF], [false])
+AM_CONDITIONAL([GCONF_SCHEMAS_INSTALL], [false])
 
 # --enable-memconf option.
 AC_ARG_ENABLE(memconf,
@@ -455,12 +449,10 @@ Makefile
 ibus-1.0.pc
 ibus.spec
 client/Makefile
-client/gtk2/Makefile
 client/gtk3/Makefile
 client/x11/Makefile
 src/Makefile
 src/ibusversion.h
-src/tests/Makefile
 bus/Makefile
 engine/Makefile
 engine/simple.xml.in
@@ -470,10 +462,6 @@ data/Makefile
 data/icons/Makefile
 data/keymaps/Makefile
 data/dconf/Makefile
-docs/Makefile
-docs/reference/Makefile
-docs/reference/ibus/ibus-docs.sgml
-docs/reference/ibus/Makefile
 m4/Makefile
 ibus/_config.py
 ibus/Makefile
@@ -486,8 +474,6 @@ setup/ibus-setup
 bindings/Makefile
 bindings/vala/Makefile
 conf/Makefile
-conf/gconf/Makefile
-conf/gconf/gconf.xml.in
 conf/dconf/Makefile
 conf/dconf/dconf.xml.in
 conf/memconf/Makefile

@@ -35,9 +35,9 @@ from i18n import _, N_
 
 MAX_HOTKEY = 6
 
-class KeyboardShortcutSelection(Gtk.VBox):
+class KeyboardShortcutSelection(Gtk.Box):
     def __init__(self, shortcuts = None):
-        super(KeyboardShortcutSelection, self).__init__()
+        super(KeyboardShortcutSelection, self).__init__(orientation = Gtk.Orientation.VERTICAL)
         self.__init_ui()
         self.set_shortcuts(shortcuts)
 
@@ -61,7 +61,7 @@ class KeyboardShortcutSelection(Gtk.VBox):
         self.pack_start(scrolledwindow, True, True, 4)
 
         # key code
-        hbox = Gtk.HBox()
+        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL)
         label = Gtk.Label(_("Key code:"))
         label.set_justify(Gtk.Justification.LEFT)
         label.set_alignment(0.0, 0.5)
@@ -76,13 +76,13 @@ class KeyboardShortcutSelection(Gtk.VBox):
         self.pack_start(hbox, False, True, 4)
 
         # modifiers
-        hbox = Gtk.HBox()
+        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL)
         label = Gtk.Label(_("Modifiers:"))
         label.set_justify(Gtk.Justification.LEFT)
         label.set_alignment(0.0, 0.5)
         hbox.pack_start(label, False, True, 4)
 
-        table = Gtk.Table(4, 2)
+        table = Gtk.Grid()
         self.__modifier_buttons = []
         self.__modifier_buttons.append(("Control",  Gtk.CheckButton("_Control"),    Gdk.ModifierType.CONTROL_MASK))
         self.__modifier_buttons.append(("Alt",      Gtk.CheckButton("A_lt"),        Gdk.ModifierType.MOD1_MASK))
@@ -95,31 +95,31 @@ class KeyboardShortcutSelection(Gtk.VBox):
         for name, button, mask in self.__modifier_buttons:
             button.connect("toggled", self.__modifier_button_toggled_cb, name)
 
-        table.attach(self.__modifier_buttons[0][1], 0, 1, 0, 1)
-        table.attach(self.__modifier_buttons[1][1], 1, 2, 0, 1)
-        table.attach(self.__modifier_buttons[2][1], 2, 3, 0, 1)
-        table.attach(self.__modifier_buttons[3][1], 3, 4, 0, 1)
-        table.attach(self.__modifier_buttons[4][1], 0, 1, 1, 2)
-        table.attach(self.__modifier_buttons[5][1], 1, 2, 1, 2)
-        table.attach(self.__modifier_buttons[6][1], 2, 3, 1, 2)
-        table.attach(self.__modifier_buttons[7][1], 3, 4, 1, 2)
+        table.attach(self.__modifier_buttons[0][1], 0, 0, 1, 1)
+        table.attach(self.__modifier_buttons[1][1], 1, 0, 1, 1)
+        table.attach(self.__modifier_buttons[2][1], 2, 0, 1, 1)
+        table.attach(self.__modifier_buttons[3][1], 3, 0, 1, 1)
+        table.attach(self.__modifier_buttons[4][1], 0, 1, 1, 1)
+        table.attach(self.__modifier_buttons[5][1], 1, 1, 1, 1)
+        table.attach(self.__modifier_buttons[6][1], 2, 1, 1, 1)
+        table.attach(self.__modifier_buttons[7][1], 3, 1, 1, 1)
         hbox.pack_start(table, True, True, 4)
         self.pack_start(hbox, False, True, 4)
 
         # buttons
-        hbox = Gtk.HBox()
+        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL)
         # add button
-        self.__add_button = Gtk.Button(stock = Gtk.STOCK_ADD)
+        self.__add_button = Gtk.Button(label = _("Add"))
         self.__add_button.set_sensitive(False)
         self.__add_button.connect("clicked", self.__add_button_clicked_cb)
         hbox.pack_start(self.__add_button, False, True, 0)
         # apply button
-        self.__apply_button = Gtk.Button(stock = Gtk.STOCK_APPLY)
+        self.__apply_button = Gtk.Button(label = _("Apply"))
         self.__apply_button.set_sensitive(False)
         self.__apply_button.connect("clicked", self.__apply_button_clicked_cb)
         hbox.pack_start(self.__apply_button, False, True, 0)
         # delete button
-        self.__delete_button = Gtk.Button(stock = Gtk.STOCK_DELETE)
+        self.__delete_button = Gtk.Button(label = _("Delete"))
         self.__delete_button.set_sensitive(False)
         self.__delete_button.connect("clicked", self.__delete_button_clicked_cb)
         hbox.pack_start(self.__delete_button, False, True, 0)
@@ -313,10 +313,10 @@ class KeyboardShortcutSelectionDialog(Gtk.Dialog):
 if __name__ == "__main__":
     dlg = KeyboardShortcutSelectionDialog(
         title = "Select test",
-        buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                   Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        buttons = ("_Cancel", Gtk.ResponseType.CANCEL,
+                   "_OK", Gtk.ResponseType.OK))
     dlg.add_shortcut("Control+Shift+space")
     dlg.set_shortcuts(None)
-    print dlg.run()
-    print dlg.get_shortcuts()
+    print(dlg.run())
+    print(dlg.get_shortcuts())
 

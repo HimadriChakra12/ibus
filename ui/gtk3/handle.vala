@@ -153,8 +153,23 @@ class Handle : Gtk.EventBox {
             Gtk.StyleContext context = get_style_context();
             Gtk.Allocation allocation;
             get_allocation(out allocation);
-            Gtk.render_handle(context, cr,
-                allocation.x, allocation.y + (allocation.height - 40) / 2, allocation.width, 40.0);
+
+            Gdk.RGBA color = context.get_color(context.get_state());
+            cr.set_source_rgba(color.red, color.green, color.blue, color.alpha);
+
+            /* Draw a simple 3x3 grip of dots, centered in the handle area,
+             * replacing the removed Gtk.render_handle() themed drawing call. */
+            double cx = allocation.x + allocation.width / 2.0;
+            double cy = allocation.y + allocation.height / 2.0;
+            double spacing = 4.0;
+            double radius = 1.5;
+            for (int row = -1; row <= 1; row++) {
+                for (int col = -1; col <= 1; col++) {
+                    cr.arc(cx + col * spacing, cy + row * spacing,
+                           radius, 0, 2 * Math.PI);
+                    cr.fill();
+                }
+            }
         }
         return false;
     }

@@ -40,6 +40,7 @@ endif
 
 SUBDIRS = \
 	src \
+	bindings \
 	util \
 	conf \
 	client \
@@ -48,8 +49,6 @@ SUBDIRS = \
 	data \
 	m4 \
 	po \
-	docs \
-	bindings \
 	$(UI_DIR) \
 	$(DAEMON_DIR) \
 	$(PYTHON_LIB_DIRS) \

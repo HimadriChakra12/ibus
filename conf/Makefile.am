@@ -20,12 +20,6 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-if ENABLE_GCONF
-GCONF_DIR = \
-	gconf \
-	$(NULL)
-endif
-
 if ENABLE_MEMCONF
 MEMCONF_DIR = \
 	memconf \
@@ -40,7 +34,6 @@ endif
 
 SUBDIRS = \
 	$(DCONF_DIR) \
-	$(GCONF_DIR) \
 	$(MEMCONF_DIR) \
 	$(NULL)
 
